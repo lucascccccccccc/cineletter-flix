@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Clock, Calendar, Star, Plus, Check, ChevronLeft } from 'lucide-react';
@@ -31,13 +31,15 @@ const MovieDetails = () => {
     queryKey: ['userRating', movieId],
     queryFn: () => getUserRating(movieId),
     enabled: !!movieId,
-    onSuccess: (data) => {
-      if (data) {
-        setUserRating(data.rating);
-        if (data.review) setReview(data.review);
-      }
-    }
   });
+
+  // Use useEffect instead of onSuccess for setting rating data
+  useEffect(() => {
+    if (ratingData) {
+      setUserRating(ratingData.rating);
+      if (ratingData.review) setReview(ratingData.review);
+    }
+  }, [ratingData]);
 
   const handleRatingClick = (rating: number) => {
     setUserRating(rating);
